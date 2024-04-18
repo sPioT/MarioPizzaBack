@@ -11,7 +11,13 @@ import com.idformation.marioPizza.security.models.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	@Query(value = "select u from User u where phoneNumber = :username")
+	/**
+	 * Find a User by its username (phonenumber in our case).
+	 *
+	 * @param username the phonenumber of the user
+	 * @return the User
+	 */
+	@Query(value = "select u from User u where phonenumber = :username")
 	Optional<User> findByUsername(String username);
 
 }

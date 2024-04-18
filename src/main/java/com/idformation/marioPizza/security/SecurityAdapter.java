@@ -1,71 +1,98 @@
 package com.idformation.marioPizza.security;
 
-import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.idformation.marioPizza.security.jwt.JwtAuthenticationFilter;
 
-@Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityAdapter extends WebSecurityConfigurerAdapter {
+import jakarta.servlet.http.HttpServletResponse;
 
+@Configuration
+@EnableMethodSecurity
+public class SecurityAdapter {
+
+	/** import the userdetailservice. */
 	@Autowired
 	private UserDetailsService userDetailsService;
 
+	/**
+	 * @return an AuthenticationManager
+	 */
 	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
+	public AuthenticationManager authenticationManager() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+
+		return new ProviderManager(authProvider);
 	}
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+	/**
+	 * @param http an http to configure
+	 * @return a SecurityFilterChain
+	 * @throws Exception
+	 */
+	@Bean
+	public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
+
+		http.cors(Customizer.withDefaults());
+		http.csrf((csrf) -> csrf.disable());
+		http.exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint((req, res, ex) -> res
+				.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED : " + ex.getMessage())));
+
+		http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+		// set required security based on request
+		http.authorizeHttpRequests(req -> req.requestMatchers("/ping").permitAll());
+		http.authorizeHttpRequests(req -> req.requestMatchers("/auth/**").permitAll());
+		http.authorizeHttpRequests(req -> req.anyRequest().authenticated());
+
+		return http.build();
 	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		// @formatter:off
-		http
-		.headers().frameOptions().sameOrigin()
-		.and()
-		.csrf().disable()
-		.authorizeRequests()
-		.antMatchers("/auth/**").permitAll()
-		.anyRequest().authenticated()
-		.and()
-		.exceptionHandling()
-		.authenticationEntryPoint((req, res, ex) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "UNAUTHORIZED : " + ex.getMessage()))
-		.and()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and()
-		.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-		// @formatter:on
-		http.cors();
-	}
-
+	/**
+	 * @return a JwtAuthenticationFilter
+	 */
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
 		return new JwtAuthenticationFilter();
 	}
 
+	/**
+	 *
+	 * @return a configuration for the cors
+	 */
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("*"));
+		configuration.setAllowedMethods(Arrays.asList("*"));
+		configuration.setAllowedHeaders(Arrays.asList("*"));
+		configuration.addExposedHeader("content-disposition");
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+		source.registerCorsConfiguration("/**", configuration);
+
+		return source;
 	}
+
 }

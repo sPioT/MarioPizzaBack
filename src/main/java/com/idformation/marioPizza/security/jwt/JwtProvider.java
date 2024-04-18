@@ -4,43 +4,56 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
+import javax.crypto.SecretKey;
 
-import com.idformation.marioPizza.security.service.utils.UserPrincipal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 
 @Component
 public class JwtProvider {
-
+	/** a secret key provided in the app parameters. */
 	@Value("${app.jwtSecretKey}")
 	private String secret;
 
+	/** the live time of the JWT provided in the app parameters. */
 	@Value("${app.jwtExpirationInMs}")
 	private int jwtExpirationInMs;
 
+	/** a key. */
 	private Key key;
 
-	protected final Log logger = LogFactory.getLog(getClass());
+	/** a logger for the class. */
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public String generateToken(Authentication authentication) {
-		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+	/**
+	 * Generate a JWT token.
+	 *
+	 * @param username the user
+	 * @return the JWT token as a String
+	 */
+	public String generateToken(final String username) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
-		return Jwts.builder().setSubject(userPrincipal.getUsername()).setIssuedAt(new Date()).setExpiration(expiryDate)
-				.signWith(getSigningKey(), SignatureAlgorithm.HS512).compact();
+		return Jwts.builder().subject(username).issuedAt(new Date()).expiration(expiryDate).signWith(getSigningKey())
+				.compact();
+	}
+
+	/**
+	 * @param token the token to parse
+	 * @return the date of expiration extracted from the JWT
+	 */
+	public Date getExpiryDate(final String token) {
+		return getClaims(token).getExpiration();
 	}
 
 	private Key getSigningKey() {
@@ -51,22 +64,46 @@ public class JwtProvider {
 		return key;
 	}
 
-	public String getUserUsernameFromJWT(String token) {
-		Claims claims = Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
-		return claims.getSubject();
+	/**
+	 * @param token the token to parse
+	 * @return the login of the user
+	 */
+	public String getUserUsernameFromJWT(final String token) {
+		return getClaims(token).getSubject();
 	}
 
-	public boolean validateToken(String authToken) {
+	/**
+	 * Checks if the token is OK.
+	 *
+	 * @param token the token to parse
+	 * @return true or false
+	 */
+	public boolean validateToken(final String token) {
 		try {
-			Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(authToken);
+			getClaims(token);
 			return true;
-		} catch (SignatureException ex) {
-		} catch (MalformedJwtException ex) {
-		} catch (ExpiredJwtException ex) {
-		} catch (UnsupportedJwtException ex) {
-		} catch (IllegalArgumentException ex) {
+		} catch (io.jsonwebtoken.security.SecurityException e) {
+			logger.error("Invalid JWT signature: {}", e.getMessage());
+		} catch (MalformedJwtException e) {
+			logger.error("Invalid JWT token: {}", e.getMessage());
+		} catch (ExpiredJwtException e) {
+			logger.error("JWT token is expired: {}", e.getMessage());
+		} catch (UnsupportedJwtException e) {
+			logger.error("JWT token is unsupported: {}", e.getMessage());
+		} catch (IllegalArgumentException e) {
+			logger.error("JWT claims string is empty: {}", e.getMessage());
 		}
 		return false;
 	}
 
+	/**
+	 *
+	 * @param token a token
+	 * @return the claims from the token
+	 */
+	private Claims getClaims(final String token) {
+		Claims claims = Jwts.parser().verifyWith((SecretKey) getSigningKey()).build().parseSignedClaims(token)
+				.getPayload();
+		return claims;
+	}
 }

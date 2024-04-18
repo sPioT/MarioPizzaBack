@@ -1,32 +1,36 @@
 package com.idformation.marioPizza.core.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "pizza")
 public class Pizza {
 
+	/** a technical id. */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	/** the name of the pizza. */
 	@Column
 	private String name;
 
+	/** the description of the pizza. */
 	@Column
 	private String description;
 
+	/** an image for the pizza. */
 	@Column
 	private String image;
 
+	/** the price. */
 	@Column
 	private Double price;
-
 
 	/**
 	 *
@@ -35,25 +39,31 @@ public class Pizza {
 		super();
 	}
 
-	public Pizza(Long id) {
+	/**
+	 * .
+	 *
+	 * @param pId
+	 */
+	public Pizza(final Long pId) {
 		super();
-		this.id = id;
+		this.id = pId;
 	}
 
 	/**
-	 * @param id
-	 * @param name
-	 * @param description
-	 * @param image
-	 * @param price
+	 * @param pId
+	 * @param pName
+	 * @param pDescription
+	 * @param pImage
+	 * @param pPrice
 	 */
-	public Pizza(Long id, String name, String description, String image, Double price) {
+	public Pizza(final Long pId, final String pName, final String pDescription, final String pImage,
+			final Double pPrice) {
 		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.image = image;
-		this.price = price;
+		this.id = pId;
+		this.name = pName;
+		this.description = pDescription;
+		this.image = pImage;
+		this.price = pPrice;
 	}
 
 	/**
@@ -84,7 +94,6 @@ public class Pizza {
 		return name;
 	}
 
-
 	/**
 	 * @return the price
 	 */
@@ -93,40 +102,38 @@ public class Pizza {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param pDescription the description to set
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDescription(final String pDescription) {
+		this.description = pDescription;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param pId the id to set
 	 */
-	public void setId(Long id) {
-		this.id = id;
+	public void setId(final Long pId) {
+		this.id = pId;
 	}
 
 	/**
-	 * @param image the image to set
+	 * @param pImage the image to set
 	 */
-	public void setImage(String image) {
-		this.image = image;
+	public void setImage(final String pImage) {
+		this.image = pImage;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param pName the name to set
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setName(final String pName) {
+		this.name = pName;
 	}
-
 
 	/**
-	 * @param price the price to set
+	 * @param pPrice the price to set
 	 */
-	public void setPrice(Double price) {
-		this.price = price;
+	public void setPrice(final Double pPrice) {
+		this.price = pPrice;
 	}
-
 
 }

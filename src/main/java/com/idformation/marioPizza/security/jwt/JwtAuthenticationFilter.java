@@ -2,11 +2,6 @@ package com.idformation.marioPizza.security.jwt;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,19 +12,28 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
+public final class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+	/** A token header set in the app parameters. */
 	@Value("${app.jwtTokenHeader}")
 	private String tokenHeader;
 
+	/** a jwt token provider. */
 	@Autowired
 	private JwtProvider tokenProvider;
+
+	/** a service able to provide access to the users details. */
 	@Autowired
 	private UserDetailsService userDetailsService;
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+	protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+			final FilterChain filterChain) throws ServletException, IOException {
 		try {
 			String jwt = getJwtFromRequest(request);
 			if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
@@ -46,12 +50,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-	public String getJwtFromRequest(HttpServletRequest request) {
+	/**
+	 * Extract JWT from a HttpServletRequest.
+	 *
+	 * @param request an HttpServletRequest
+	 * @return the JWT
+	 */
+	public String getJwtFromRequest(final HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(tokenHeader)) {
 			return bearerToken.substring(tokenHeader.length() + 1, bearerToken.length());
 		}
 		return null;
 	}
-
 }

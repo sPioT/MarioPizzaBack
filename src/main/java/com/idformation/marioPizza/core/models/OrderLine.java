@@ -1,31 +1,35 @@
 package com.idformation.marioPizza.core.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "order_line")
 public class OrderLine {
 
+	/** a technical id. */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	/** the order. */
 	@ManyToOne
-	@JoinColumn(name="ord_id", referencedColumnName = "id", nullable = false)
+	@JoinColumn(name = "ord_id", referencedColumnName = "id", nullable = false)
 	private Order order;
 
+	/** the pizza. */
 	@ManyToOne
-	@JoinColumn(name="piz_id", referencedColumnName = "id", nullable = false)
+	@JoinColumn(name = "piz_id", referencedColumnName = "id", nullable = false)
 	private Pizza pizza;
 
-	@Column(name="quantity")
+	/** the quantity. */
+	@Column(name = "quantity")
 	private Short quantity;
 
 	/**
@@ -64,33 +68,31 @@ public class OrderLine {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param pId the id to set
 	 */
-	public void setId(Long id) {
-		this.id = id;
+	public void setId(final Long pId) {
+		this.id = pId;
 	}
 
 	/**
-	 * @param order the order to set
+	 * @param pOrder the order to set
 	 */
-	public void setOrder(Order order) {
-		this.order = order;
+	public void setOrder(final Order pOrder) {
+		this.order = pOrder;
 	}
 
 	/**
-	 * @param pizza the pizza to set
+	 * @param pPizza the pizza to set
 	 */
-	public void setPizza(Pizza pizza) {
-		this.pizza = pizza;
+	public void setPizza(final Pizza pPizza) {
+		this.pizza = pPizza;
 	}
 
 	/**
-	 * @param quantity the quantity to set
+	 * @param pQuantity the quantity to set
 	 */
-	public void setQuantity(Short quantity) {
-		this.quantity = quantity;
+	public void setQuantity(final Short pQuantity) {
+		this.quantity = pQuantity;
 	}
-
-
 
 }

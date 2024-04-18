@@ -4,40 +4,45 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import com.idformation.marioPizza.security.models.User;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "`order`")
 public class Order {
 
+	/** a technical id. */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name="`date`")
+	/** the date of the order. */
+	@Column(name = "`date`")
 	@Temporal(TemporalType.DATE)
 	private Date date;
 
-	@Column(name="total_amount")
-	private Double totalAmount=0.;
+	/** the total amount of the order. */
+	@Column(name = "total_amount")
+	private Double totalAmount = 0.;
 
+	/** the user associated with the order. */
 	@ManyToOne
-	@JoinColumn(name="usr_id", referencedColumnName = "id")
+	@JoinColumn(name = "usr_id", referencedColumnName = "id")
 	private User user;
 
+	/** the detail of the order. */
 	@OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
 	private List<OrderLine> lines;
 
@@ -49,9 +54,11 @@ public class Order {
 	}
 
 	/**
-	 * @param lines the lines to set
+	 * add lines to the order.
+	 *
+	 * @param line the line to set
 	 */
-	public void addLine(OrderLine line) {
+	public void addLine(final OrderLine line) {
 		if (lines == null) {
 			lines = new ArrayList<>();
 		}
@@ -96,40 +103,38 @@ public class Order {
 	}
 
 	/**
-	 * @param date the date to set
+	 * @param pDate the date to set
 	 */
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDate(final Date pDate) {
+		this.date = pDate;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param pId the id to set
 	 */
-	public void setId(Long id) {
-		this.id = id;
+	public void setId(final Long pId) {
+		this.id = pId;
 	}
 
 	/**
-	 * @param lines the lines to set
+	 * @param pLines the lines to set
 	 */
-	public void setLines(List<OrderLine> lines) {
-		this.lines = lines;
+	public void setLines(final List<OrderLine> pLines) {
+		this.lines = pLines;
 	}
 
 	/**
-	 * @param totalAmount the totalAmount to set
+	 * @param pTotalAmount the totalAmount to set
 	 */
-	public void setTotalAmount(Double totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setTotalAmount(final Double pTotalAmount) {
+		this.totalAmount = pTotalAmount;
 	}
 
 	/**
-	 * @param user the user to set
+	 * @param pUser the user to set
 	 */
-	public void setUser(User user) {
-		this.user = user;
+	public void setUser(final User pUser) {
+		this.user = pUser;
 	}
-
-
 
 }

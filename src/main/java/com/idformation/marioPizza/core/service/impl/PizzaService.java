@@ -10,8 +10,11 @@ import com.idformation.marioPizza.core.repository.IPizzaRepository;
 import com.idformation.marioPizza.core.service.IPizzaService;
 
 @Service
-public class PizzaService implements IPizzaService {
+public final class PizzaService implements IPizzaService {
 
+	/**
+	 * the repository for the pizzas.
+	 */
 	@Autowired
 	private IPizzaRepository pizzaRepo;
 

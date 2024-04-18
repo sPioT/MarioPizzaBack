@@ -1,4 +1,4 @@
-package com.idformation.marioPizza.security.service.utils;
+package com.idformation.marioPizza.security.utils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +9,13 @@ import com.idformation.marioPizza.security.models.User;
 
 public class UserMapper {
 
-	public static UserPrincipal userToPrincipal(User user) {
+	/**
+	 * Turn a User into a UserPrincipal.
+	 *
+	 * @param user the User
+	 * @return a UserPrincipal
+	 */
+	public static UserPrincipal userToPrincipal(final User user) {
 		UserPrincipal userp = new UserPrincipal();
 		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
 				.map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName())).collect(Collectors.toList());

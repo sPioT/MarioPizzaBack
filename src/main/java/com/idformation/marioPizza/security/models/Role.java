@@ -1,47 +1,63 @@
 package com.idformation.marioPizza.security.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "roles")
 public class Role {
-
+	/** technical ID. */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	/** Name of the role. */
 	@Enumerated(EnumType.STRING)
-	@Column(length = 20)
 	private RoleName name;
 
+	/** default constructor. */
 	public Role() {
 	}
 
-	public Role(RoleName name) {
-		this.name = name;
+	/**
+	 * constructor from a rolename.
+	 *
+	 * @param pName a rolename
+	 */
+	public Role(final RoleName pName) {
+		this.name = pName;
 	}
 
+	/**
+	 * @return the id
+	 */
 	public Integer getId() {
 		return id;
 	}
 
+	/**
+	 * @return the rolename
+	 */
 	public RoleName getName() {
 		return name;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	/**
+	 * @param pId the id to set
+	 */
+	public void setId(final Integer pId) {
+		this.id = pId;
 	}
 
-	public void setName(RoleName name) {
-		this.name = name;
+	/**
+	 * @param pName the rolename to set
+	 */
+	public void setName(final RoleName pName) {
+		this.name = pName;
 	}
-
 }

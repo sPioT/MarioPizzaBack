@@ -1,31 +1,48 @@
 package com.idformation.marioPizza.core.dto;
 
+import java.util.List;
+
 public class OrderDTO {
-	private Long pizzaId;
-	private Short quantity;
+
+	/** total amount of the order. */
+	private Double totalAmount;
+
+	/** details of the order. */
+	private List<OrderLineDTO> lines;
+
 	/**
-	 * @return the pizzaId
+	 *
 	 */
-	public Long getPizzaId() {
-		return pizzaId;
+	public OrderDTO() {
+		super();
 	}
+
 	/**
-	 * @return the quantity
+	 * @return the totalAmount
 	 */
-	public Short getQuantity() {
-		return quantity;
+	public Double getTotalAmount() {
+		return totalAmount;
 	}
+
 	/**
-	 * @param pizzaId the pizzaId to set
+	 * @param pTotalAmount the totalAmount to set
 	 */
-	public void setPizzaId(Long pizzaId) {
-		this.pizzaId = pizzaId;
+	public void setTotalAmount(final Double pTotalAmount) {
+		this.totalAmount = pTotalAmount;
 	}
+
 	/**
-	 * @param quantity the quantity to set
+	 * @return the lines
 	 */
-	public void setQuantity(Short quantity) {
-		this.quantity = quantity;
+	public List<OrderLineDTO> getLines() {
+		return lines;
+	}
+
+	/**
+	 * @param pLines the lines to set
+	 */
+	public void setLines(final List<OrderLineDTO> pLines) {
+		this.lines = pLines;
 	}
 
 }

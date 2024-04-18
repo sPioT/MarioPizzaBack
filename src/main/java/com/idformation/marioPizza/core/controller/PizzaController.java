@@ -2,10 +2,7 @@ package com.idformation.marioPizza.core.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,42 +19,59 @@ import com.idformation.marioPizza.core.service.IPizzaService;
 import com.idformation.marioPizza.security.jwt.JwtAuthenticationFilter;
 import com.idformation.marioPizza.security.jwt.JwtProvider;
 import com.idformation.marioPizza.security.models.User;
-import com.idformation.marioPizza.security.service.UserDetailsServiceImpl;
+import com.idformation.marioPizza.security.service.impl.UserDetailsServiceImpl;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/pizza")
-@CrossOrigin(origins = "http://localhost:19000", maxAge = 3600)
 public class PizzaController {
 
+	/** the service for the pizza. */
 	@Autowired
 	private IPizzaService pizzaService;
 
+	/** the service for the order. */
 	@Autowired
 	private IOrderService orderService;
 
+	/** the service for the user. */
 	@Autowired
 	private UserDetailsServiceImpl userService;
 
+	/** the jwt provider. */
 	@Autowired
 	private JwtProvider jwtProvider;
 
+	/** the JwtAuthenticationFiltera. */
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+	/**
+	 * Entry Point for getting all available Pizzas.
+	 *
+	 * @return a list of pizzas
+	 */
 	@GetMapping("/")
 	List<PizzaDTO> getAll() {
 		return PizzaMapper.toDTOs(pizzaService.getAll());
 	}
 
+	/**
+	 * Entry point for saving an order.
+	 *
+	 * @param orderDto the dto containing the datas for the order
+	 * @param request  the request received
+	 */
 	@PostMapping("/")
-	void saveOrder(@RequestBody List<OrderDTO> orders, HttpServletRequest request) {
+	void saveOrder(@RequestBody final OrderDTO orderDto, final HttpServletRequest request) {
 
 		// 1. identify the user from the jwt
-		User user = userService
-				.findByUsername(jwtProvider.getUserUsernameFromJWT(jwtAuthenticationFilter.getJwtFromRequest(request)));
+		User user = userService.loadUserDetails(
+				jwtProvider.getUserUsernameFromJWT(jwtAuthenticationFilter.getJwtFromRequest(request)));
 
 		// 2. create an order from the requestbody
-		Order order = OrderMapper.toEntity(orders);
+		Order order = OrderMapper.toEntity(orderDto);
 		order.setUser(user);
 
 		// 3. save the order

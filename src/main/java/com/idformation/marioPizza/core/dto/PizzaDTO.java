@@ -1,10 +1,19 @@
 package com.idformation.marioPizza.core.dto;
 
 public class PizzaDTO {
+	/** id. */
 	private Long id;
+
+	/** name. */
 	private String name;
+
+	/** description. */
 	private String description;
+
+	/** price. */
 	private Double price;
+
+	/** image. */
 	private String image;
 
 	/**
@@ -13,59 +22,68 @@ public class PizzaDTO {
 	public String getDescription() {
 		return description;
 	}
+
 	/**
 	 * @return the id
 	 */
 	public Long getId() {
 		return id;
 	}
+
 	/**
 	 * @return the image
 	 */
 	public String getImage() {
 		return image;
 	}
+
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @return the price
 	 */
 	public Double getPrice() {
 		return price;
 	}
+
 	/**
-	 * @param description the description to set
+	 * @param pDescription the description to set
 	 */
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDescription(final String pDescription) {
+		this.description = pDescription;
 	}
+
 	/**
-	 * @param id the id to set
+	 * @param pId the id to set
 	 */
-	public void setId(Long id) {
-		this.id = id;
+	public void setId(final Long pId) {
+		this.id = pId;
 	}
+
 	/**
-	 * @param image the image to set
+	 * @param pImage the image to set
 	 */
-	public void setImage(String image) {
-		this.image = image;
+	public void setImage(final String pImage) {
+		this.image = pImage;
 	}
+
 	/**
-	 * @param name the name to set
+	 * @param pName the name to set
 	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setName(final String pName) {
+		this.name = pName;
 	}
+
 	/**
-	 * @param price the price to set
+	 * @param pPrice the price to set
 	 */
-	public void setPrice(Double price) {
-		this.price = price;
+	public void setPrice(final Double pPrice) {
+		this.price = pPrice;
 	}
 
 }

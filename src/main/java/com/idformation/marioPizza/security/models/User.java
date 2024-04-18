@@ -3,47 +3,47 @@ package com.idformation.marioPizza.security.models;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.Size;
-
 import org.springframework.lang.NonNull;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
 public class User {
-
+	/** technical id. */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	/** username aka login. */
 	@NonNull
-	@Size(max = 20)
-	private String phonenumber;
+	private String phonenumber = "...";
 
+	/** password. */
 	@NonNull
-	@Size(max = 120)
-	private String password;
+	private String password = "...";
 
+	/** firstname. */
 	@NonNull
-	@Size(max = 120)
-	private String firstname;
+	private String firstname = "...";
 
+	/** lastname. */
 	@NonNull
-	@Size(max = 120)
-	private String lastname;
+	private String lastname = "...";
 
+	/** address. */
 	@NonNull
-	@Size(max = 120)
-	private String address;
+	private String address = "...";
 
+	/** roles of the user. */
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
@@ -56,22 +56,24 @@ public class User {
 	}
 
 	/**
-	 * @param id the id
-	 * @param phonenumber the phonenumber
-	 * @param password the password
-	 * @param firstname the firstname
-	 * @param lastname the lastname
-	 * @param address the adress
+	 * Constructor from parameters.
+	 *
+	 * @param pId          the id
+	 * @param pPhonenumber the phonenumber
+	 * @param pPassword    the password
+	 * @param pFirstname   the firstname
+	 * @param pLastname    the lastname
+	 * @param pAddress     the adress
 	 */
-	public User(Long id, @Size(max = 20) String phonenumber, @Size(max = 120) String password,
-			@Size(max = 120) String firstname, @Size(max = 120) String lastname, @Size(max = 120) String address) {
+	public User(final Long pId, final String pPhonenumber, final String pPassword, final String pFirstname,
+			final String pLastname, final String pAddress) {
 		super();
-		this.id = id;
-		this.phonenumber = phonenumber;
-		this.password = password;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.address = address;
+		this.id = pId;
+		this.phonenumber = pPhonenumber;
+		this.password = pPassword;
+		this.firstname = pFirstname;
+		this.lastname = pLastname;
+		this.address = pAddress;
 	}
 
 	/**
@@ -131,61 +133,59 @@ public class User {
 	}
 
 	/**
-	 * @param address the address to set
+	 * @param pAddress the address to set
 	 */
-	public void setAddress(String address) {
-		this.address = address;
+	public void setAddress(final String pAddress) {
+		this.address = pAddress;
 	}
 
 	/**
-	 * @param firstname the firstname to set
+	 * @param pFirstname the firstname to set
 	 */
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+	public void setFirstname(final String pFirstname) {
+		this.firstname = pFirstname;
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param pId the id to set
 	 */
-	public void setId(Long id) {
-		this.id = id;
+	public void setId(final Long pId) {
+		this.id = pId;
 	}
 
 	/**
-	 * @param lastname the lastname to set
+	 * @param pLastname the lastname to set
 	 */
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
+	public void setLastname(final String pLastname) {
+		this.lastname = pLastname;
 	}
 
 	/**
-	 * @param password the password to set
+	 * @param pPassword the password to set
 	 */
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPassword(final String pPassword) {
+		this.password = pPassword;
 	}
 
 	/**
-	 * @param phonenumber the phonenumber to set
+	 * @param pPhonenumber the phonenumber to set
 	 */
-	public void setPhonenumber(String phonenumber) {
-		this.phonenumber = phonenumber;
+	public void setPhonenumber(final String pPhonenumber) {
+		this.phonenumber = pPhonenumber;
 	}
 
 	/**
-	 * @param roles the roles to set
+	 * @param pRoles the roles to set
 	 */
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
+	public void setRoles(final Set<Role> pRoles) {
+		this.roles = pRoles;
 	}
 
 	/**
-	 * @param phonenumber the phonenumber to set
+	 * @param pPhonenumber the phonenumber to set
 	 */
-	public void setUsername(String phonenumber) {
-		this.phonenumber = phonenumber;
+	public void setUsername(final String pPhonenumber) {
+		this.phonenumber = pPhonenumber;
 	}
-
-
 
 }

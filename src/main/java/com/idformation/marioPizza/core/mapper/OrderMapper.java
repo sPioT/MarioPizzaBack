@@ -1,30 +1,35 @@
 package com.idformation.marioPizza.core.mapper;
 
 import java.util.Date;
-import java.util.List;
 
 import com.idformation.marioPizza.core.dto.OrderDTO;
+import com.idformation.marioPizza.core.dto.OrderLineDTO;
 import com.idformation.marioPizza.core.models.Order;
 
 public class OrderMapper {
 
-  /**
-   *
-   * @param orders list of OrderDTO
-   * @return an order
-   */
-  public static Order toEntity(final List<OrderDTO> orders) {
-    Order entity = null;
+	/**
+	 * Map an OrderDTO into an Order.
+	 *
+	 * @param order an OrderDTO
+	 * @return an order
+	 */
+	public static Order toEntity(final OrderDTO order) {
+		Order entity = null;
 
-    if (orders != null) {
-      entity = new Order();
-      entity.setDate(new Date());
-      for (OrderDTO dto : orders) {
-        entity.addLine(OrderLineMapper.toEntity(dto));
-      }
-    }
+		if (order != null) {
+			entity = new Order();
+			entity.setDate(new Date());
+			entity.setTotalAmount(order.getTotalAmount());
 
-    return entity;
-  }
+			if (order.getLines() != null) {
+				for (OrderLineDTO dto : order.getLines()) {
+					entity.addLine(OrderLineMapper.toEntity(dto));
+				}
+			}
+		}
+
+		return entity;
+	}
 
 }
