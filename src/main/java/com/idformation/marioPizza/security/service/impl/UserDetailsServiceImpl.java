@@ -8,7 +8,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.idformation.marioPizza.security.models.RoleName;
 import com.idformation.marioPizza.security.models.User;
+import com.idformation.marioPizza.security.repository.IRoleRepository;
 import com.idformation.marioPizza.security.repository.UserRepository;
 import com.idformation.marioPizza.security.utils.UserMapper;
 
@@ -19,6 +21,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	/** import the userRepository. */
 	@Autowired
 	private UserRepository userRepository;
+
+	/** import the roleRepository. */
+	@Autowired
+	private IRoleRepository roleRepository;
 
 	/**
 	 * Load user's details from the DB.
@@ -54,19 +60,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		user.setPassword(encoder.encode(user.getPassword()));
 
+		// add default role "USER"
+		user.setRoles(roleRepository.findRoleByName(RoleName.USER));
+
 		return userRepository.saveAndFlush(user);
 
-	}
-
-	/**
-	 * Update or create a user.
-	 *
-	 * @param user a user to save
-	 * @return the updated user
-	 */
-	public User update(final User user) {
-
-		return userRepository.save(user);
 	}
 
 }
