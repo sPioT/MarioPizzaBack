@@ -111,9 +111,7 @@ public class AuthController {
 
 		// 2 if creation is OK the authenticate;
 
-		return
-
-		doAuthentication(request.getTelephone(), request.getPassword());
+		return doAuthentication(request.getTelephone(), request.getPassword());
 	}
 
 	/**
