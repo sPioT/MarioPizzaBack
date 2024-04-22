@@ -20,6 +20,7 @@ import com.idformation.marioPizza.security.dto.TokenRefreshRequest;
 import com.idformation.marioPizza.security.dto.TokenRefreshResponse;
 import com.idformation.marioPizza.security.dto.UserDto;
 import com.idformation.marioPizza.security.dto.mapper.AccountMapper;
+import com.idformation.marioPizza.security.exception.DuplicateException;
 import com.idformation.marioPizza.security.jwt.JwtProvider;
 import com.idformation.marioPizza.security.jwt.exception.TokenRefreshException;
 import com.idformation.marioPizza.security.models.RefreshToken;
@@ -99,14 +100,20 @@ public class AuthController {
 
 			userService.createAccount(AccountMapper.toEntity(request));
 
+		} catch (DuplicateException e) {
+			// something went wrong, return an error
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
+
 		} catch (Exception e) {
 			// something went wrong, return an error
-			return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		// 2 if creation is OK the authenticate;
 
-		return doAuthentication(request.getTelephone(), request.getPassword());
+		return
+
+		doAuthentication(request.getTelephone(), request.getPassword());
 	}
 
 	/**

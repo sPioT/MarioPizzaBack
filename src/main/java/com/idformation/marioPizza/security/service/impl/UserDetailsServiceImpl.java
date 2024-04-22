@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.idformation.marioPizza.security.exception.DuplicateException;
 import com.idformation.marioPizza.security.models.RoleName;
 import com.idformation.marioPizza.security.models.User;
 import com.idformation.marioPizza.security.repository.IRoleRepository;
@@ -54,7 +55,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	 * @param user the User to Create
 	 * @return the User once fully created
 	 */
-	public User createAccount(final User user) {
+	public User createAccount(final User user) throws DuplicateException {
+
+		// check if the phonenumber is not used yet
+		if (userRepository.findByUsername(user.getPhonenumber()).isPresent()) {
+			throw new DuplicateException("Phonenumber is used by another user");
+		}
 
 		// need to encrypt password ;)
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
